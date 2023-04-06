@@ -1,4 +1,4 @@
-# Usign Requests for Web Scraping
+# Using Requests for Web Scraping
 
 
 ## Challenge 
@@ -13,7 +13,7 @@ In the case of [base.gov](https://www.base.gov.pt/base4), the data was indeed be
 
 To retrieve the necessary information, I decided to create a script that goes directly to the database and makes a request based on the network data, specifically the JavaScript request. With the help of a great AI tool you might have heard of, I created a function that would take the header for the request (from Inspect -> Network -> Resultados -> Copy Request Headers)
 
-To work around this limitation, we can also use a headless browser like Selenium to automate the web scraping process. You can find this script on Web-Scraping-Projects /BaseGov/Requests [Selenium](Selenium/)
+To work around this limitation, we can also use a headless browser like Selenium to automate the web scraping process. You can find this script on [Selenium Folder](../Selenium/)
 
 
 
