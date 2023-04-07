@@ -17,7 +17,8 @@ def get_data():
         'Accept-Encoding': 'gzip, deflate, br',
         'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
         'X-Requested-With': 'XMLHttpRequest',
-        'Content-Length': '128',
+        'Content-Length': '147',
+        'Cookie': 'f5avraaaaaaaaaaaaaaaa_session_=KOOIJPGPHMMGFDAFDMIPIAOJMBHKOEDNAFAKJDMLLIAOIBLIBPMFDKKEBOABIMNLGNIDEABLPDBFGFHEJHJAHGJDFJNAIIAAGHLPKHLGALEIMPAJAPLDJGILFINNEKCO; f5avraaaaaaaaaaaaaaaa_session_=KCPMODJGNINMIDHJCOAMOEOHNDFPCEANOFMMEIHJJAAGGMJCOMACCIBLGACDNPFPBAGDLPEILDEEGPJHGFGAAMPOFJNFEHDOAFPFNHOGHOMNKGMILBKNJMIAMKDJKJHN',
         'Origin': 'https://www.base.gov.pt',
         'DNT': '1',
         'Connection': 'keep-alive',
@@ -52,18 +53,16 @@ def get_data():
             df2 = pd.DataFrame.from_dict(data) #set data in dataframe format (helps with cleaning the utf-8 characters)
             df = pd.concat([df, df2], ignore_index=True) #add data to the originally created dataframe
         
-        if i==10: #Number of pages to be scraped
+        if i==1: #Number of pages to be scraped
             break
         
         i+=1
-
         time.sleep(2) #to avoid detection by the website
 
         #code to see the number of the page that is being scraped
         #print(i) 
 
-    #take a look at the data you're scraping
-    print(df)
+    df.to_excel('anuncios_request.xlsx', index=False,header=True )
 
 if __name__ == "__main__":
     get_data()
