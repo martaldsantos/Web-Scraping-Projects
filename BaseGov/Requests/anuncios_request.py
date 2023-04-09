@@ -3,7 +3,61 @@ import json
 import pandas as pd
 import time
 
-def get_data():
+def get_details(df):
+    #This function gets the details of each of the anuncios, based on the ID scraped on the main website
+    lista_completa= []
+    df2 = pd.DataFrame({'id': df['id'].astype(str)})
+    df2["link_detalhe"] = "https://www.base.gov.pt/Base4/pt/detalhe/?type=anuncios&id=" + df2["id"]
+    
+    for index in df.index:
+        url = "https://www.base.gov.pt/Base4/pt/resultados/" 
+        
+        #headers to be sent with the request
+        headers = { 
+            'Host': 'www.base.gov.pt',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/111.0.0.0 Safari/537.36 Edg/111.0.1661.62',
+            'Accept': 'text/plain, */*; q=0.01',
+            'Accept-Language': 'en-GB,en;q=0.9,en-US;q=0.8',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Content-Length': '44',
+            'Origin': 'https://www.base.gov.pt',
+            'DNT': '1',
+            'Connection': 'keep-alive',
+            'Referer': df2.loc[index, 'link_detalhe'],
+            'Sec-Fetch-Dest': 'empty',
+            'Sec-Fetch-Mode': 'cors',
+            'Sec-Fetch-Site': 'same-origin',
+            'Sec-GPC': '1',
+            'Pragma': 'no-cache',
+            'Cache-Control': 'no-cache',
+            'sec-ch-ua': '"Microsoft Edge";v="111", "Not(A:Brand";v="8", "Chromium";v="111"',
+            'sec-ch-ua-mobile': '?0',
+            'sec-ch-ua-platform': "Windows"
+        }
+
+        payload = { 
+            'type': 'detail_anuncios',
+            'version':'111.0', 
+            'id': df2.loc[index, 'id']
+        }
+
+        response = requests.post(url, headers=headers, data=payload) #send the request
+        data = json.loads(response.content) #get the response
+        lista_completa.append(data)
+
+    expanded_data = pd.DataFrame(lista_completa)
+    return expanded_data
+
+df = pd.read_excel("anuncios_request.xlsx")
+expanded_data= get_details(df)
+expanded_data[['nif', 'description', 'entidade_id']] = expanded_data['contractingEntities'].apply(lambda x: pd.Series([x[0]['nif'], x[0]['description'], x[0]['id']]))
+expanded_data.drop('contractingEntities', axis=1, inplace=True)
+expanded_data.to_excel('expanded_data.xlsx', index=False,header=True )
+
+
+def main():
 
     #url to be scraped
     url = "https://www.base.gov.pt/Base4/pt/resultados/" 
@@ -58,11 +112,11 @@ def get_data():
         
         i+=1
         time.sleep(2) #to avoid detection by the website
-
         #code to see the number of the page that is being scraped
-        #print(i) 
+        print(df["id"]) 
+        get_details(df)
 
     df.to_excel('anuncios_request.xlsx', index=False,header=True )
 
-if __name__ == "__main__":
-    get_data()
+# if __name__ == "__main__":
+#     main()
